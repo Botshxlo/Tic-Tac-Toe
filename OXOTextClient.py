@@ -65,6 +65,8 @@ class OXOTextClient(GameClient):
                 self.outlit(self.display_board())  # display board 
     
             elif str(msg[:12]) == "invalid move":
+                self.outlit(msg)
+                self.outlit("please enter a valid position on the board (0-8")
                 self.outlit(self.display_board())  # display board     
                 
             # check for message from the server (game over,(O,X,T) )
