@@ -2,8 +2,6 @@ from GameClient import *
 
 class OXOTextClient(GameClient):
     
-    counter = 0
-    
     def __init__(self):
         GameClient.__init__(self)
         self.board = [' '] * BOARD_SIZE
@@ -31,15 +29,9 @@ class OXOTextClient(GameClient):
               ---------
               {} | {} | {}     6 | 7 | 8
               """.format(
-                  self.board[0],
-                  self.board[1],
-                  self.board[2],
-                  self.board[3],
-                  self.board[4],
-                  self.board[5],
-                  self.board[6],
-                  self.board[7],
-                  self.board[8],
+                  self.board[0],self.board[1],self.board[2],
+                  self.board[3],self.board[4],self.board[5],
+                  self.board[6],self.board[7],self.board[8],
               )
               
     # Method that will write everything in the buffer to the terminal
@@ -53,16 +45,16 @@ class OXOTextClient(GameClient):
         # Check if server sent a message
         if msg:   
                     
-            # Display board and character of players on a new game
+            # Display board and character of player on a new game
             if msg == "new game,O" or msg == "new game,X":
-                self.outlit(msg[:8] + ", your character is " + msg[9]) # display the character of the player
+                self.outlit(msg[:8] + ", your character is " + msg[9]) # display the character
                 self.outlit(self.display_board())   # display board to players
                      
             # Check for current players move and print appropriate information
             if msg == 'your move':
                 self.outlit("your move")  # write message in the buffer to terminal
                 move = self.input_move() 
-                self.send_message(move)         
+                self.send_message(move)  # send message to server
                 
             elif msg == "opponents move":
                 self.outlit("opponents move, wait for opponent to place a move...") # write message in the buffer to terminal
@@ -70,21 +62,21 @@ class OXOTextClient(GameClient):
             # Check for message from the server (valid or invalid) 
             if str(msg[:10]) == "valid move":
                 self.board[eval(msg[13])] = msg[11]  # insert symbol X or O in the board
-                self.outlit(self.display_board())  # Display board for players
+                self.outlit(self.display_board())  # display board 
     
             elif str(msg[:12]) == "invalid move":
-                self.outlit(self.display_board())  # display board for players    
+                self.outlit(self.display_board())  # display board     
                 
             # check for message from the server (game over,(O,X,T) )
             if msg == "game over,O" or msg == "game over,X":
                 self.outlit(msg[:9])
                 self.outlit("Player " + msg[10] + " Wins!") # Display the winner
-                   
+                
             elif msg == "game over,T":
                 self.outlit(msg[:9])
-                self.outlit("Its a Draw!") # write results in the buffer to terminal
+                self.outlit("Its a Draw!") # write message in the buffer to terminal
             
-            # Check for message from the sever (play again or exit game)    
+            # Check for message from the sever (play again or exit game and reset board game)    
             if msg == "play again":
                 
                 # reset board for new game
@@ -97,7 +89,7 @@ class OXOTextClient(GameClient):
                 while not ("y" == answer or answer == "n"):
                     self.outlit("Please enter y or n...") # write message in the buffer to terminal
                     answer = self.input_play_again()
-                self.send_message(answer) # send answer to server
+                self.send_message(answer) # send message to server
 
             elif msg == "exit game":
                 self.outlit("Someone ended the game") # write message in the buffer to terminal
@@ -109,9 +101,7 @@ class OXOTextClient(GameClient):
                 self.handle_message(msg)
             else: 
                 break
-            
-""" Do not change the main method """
-
+                
 def main():
     otc = OXOTextClient()
     while True:
@@ -119,8 +109,7 @@ def main():
             otc.connect_to_server(otc.input_server())
             break
         except:
-            print('Error connecting to server!')
-    print("Botshelo") # delete later        
+            print('Error connecting to server!')       
     otc.play_loop()
     input('Press click to exit.')
         
