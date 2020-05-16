@@ -23,11 +23,11 @@ class OXOTextClient(GameClient):
         # implement this method
         
         return """ 
-              {} | {} | {}     0 | 1 | 2
-              ---------
-              {} | {} | {}     3 | 4 | 5
-              ---------
-              {} | {} | {}     6 | 7 | 8
+                        {} | {} | {}     0 | 1 | 2
+                       -----------
+                        {} | {} | {}     3 | 4 | 5
+                       -----------
+                        {} | {} | {}     6 | 7 | 8
               """.format(
                   self.board[0],self.board[1],self.board[2],
                   self.board[3],self.board[4],self.board[5],
@@ -47,8 +47,9 @@ class OXOTextClient(GameClient):
                     
             # Display board and character of player on a new game
             if msg == "new game,O" or msg == "new game,X":
+                self.outlit("{0:^68}".format("Tic-Tac-Toe"))
                 self.outlit(msg[:8] + ", your character is " + msg[9]) # display the character
-                self.outlit(self.display_board())   # display board to players
+                self.outlit(self.display_board())   # display board
                      
             # Check for current players move and print appropriate information
             if msg == 'your move':
@@ -58,21 +59,20 @@ class OXOTextClient(GameClient):
                 
             elif msg == "opponents move":
                 self.outlit("opponents move, wait for opponent to place a move...") # write message in the buffer to terminal
-             
+                
             # Check for message from the server (valid or invalid) 
             if str(msg[:10]) == "valid move":
                 self.board[eval(msg[13])] = msg[11]  # insert symbol X or O in the board
                 self.outlit(self.display_board())  # display board 
     
             elif str(msg[:12]) == "invalid move":
-                self.outlit(msg)
-                self.outlit("please enter a valid position on the board (0-8")  # write message in the buffer to terminal
+                self.outlit("invalid move!, please enter a valid position on the board (0-8)")  # write message in the buffer to terminal
                 self.outlit(self.display_board())  # display board     
                 
             # check for message from the server (game over,(O,X,T) )
             if msg == "game over,O" or msg == "game over,X":
                 self.outlit(msg[:9])
-                self.outlit("Player " + msg[10] + " Wins!") # Display the winner
+                self.outlit("Player " + msg[10] + " Wins!\n") # Display the winner
                 
             elif msg == "game over,T":
                 self.outlit(msg[:9])
@@ -91,11 +91,17 @@ class OXOTextClient(GameClient):
                 while not ("y" == answer or answer == "n"):
                     self.outlit("Please enter y or n...") # write message in the buffer to terminal
                     answer = self.input_play_again()
+                self.answer_holder = answer    # set the answer of each player
                 self.send_message(answer) # send message to server
 
             elif msg == "exit game":
-                self.outlit("Someone ended the game") # write message in the buffer to terminal
-                    
+                
+                # Check which player ended the game and output appropriate message
+                if self.answer_holder == "n":
+                    self.outlit("You left the game\n")
+                else:
+                    self.outlit("oppponent left the game\n")    
+    
     def play_loop(self):
         while True:
             msg = self.receive_message()
