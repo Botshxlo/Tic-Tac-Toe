@@ -48,7 +48,7 @@ class OXOTextClient(GameClient):
             # Display board and character of player on a new game
             if msg == "new game,O" or msg == "new game,X":
                 self.outlit("{0:^68}".format("Tic-Tac-Toe"))
-                self.outlit(msg[:8] + ", your character is " + msg[9]) # display the character
+                self.outlit("{}, your character is {}".format(msg[:8],msg[9])) # display the character
                 self.outlit(self.display_board())   # display board
                      
             # Check for current players move and print appropriate information
@@ -61,11 +61,11 @@ class OXOTextClient(GameClient):
                 self.outlit("opponents move, wait for opponent to place a move...") # write message in the buffer to terminal
                 
             # Check for message from the server (valid or invalid) 
-            if str(msg[:10]) == "valid move":
+            if msg[:10] == "valid move":
                 self.board[eval(msg[13])] = msg[11]  # insert symbol X or O in the board
                 self.outlit(self.display_board())  # display board 
     
-            elif str(msg[:12]) == "invalid move":
+            elif msg[:12] == "invalid move":
                 self.outlit("invalid move!, please enter a valid position on the board (0-8)")  # write message in the buffer to terminal
                 self.outlit(self.display_board())  # display board     
                 
@@ -76,7 +76,7 @@ class OXOTextClient(GameClient):
                 
             elif msg == "game over,T":
                 self.outlit(msg[:9])
-                self.outlit("Its a Draw!") # write message in the buffer to terminal
+                self.outlit("Its a Draw!\n") # write message in the buffer to terminal
             
             # Check for message from the sever (play again or exit game and reset board game)    
             if msg == "play again":
@@ -89,7 +89,7 @@ class OXOTextClient(GameClient):
                 
                 # Check for invalid inputs    
                 while not ("y" == answer or answer == "n"):
-                    self.outlit("Please enter y or n...") # write message in the buffer to terminal
+                    self.outlit("Please enter y or n...\n") # write message in the buffer to terminal
                     answer = self.input_play_again()
                 self.answer_holder = answer    # set the answer of each player
                 self.send_message(answer) # send message to server
