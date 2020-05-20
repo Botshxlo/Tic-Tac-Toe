@@ -61,7 +61,8 @@ class OXOTextClient(GameClient):
                 
             # Check for message from the server (valid or invalid) 
             if msg[:10] == "valid move":
-                self.board[eval(msg[13])] = msg[11]  # insert symbol X or O in the board
+                self.shape = msg[11]
+                self.board[eval(msg[13])] = self.shape  # insert symbol X or O in the board
                 outlit(self.display_board())  # display board 
     
             elif msg[:12] == "invalid move":
