@@ -82,8 +82,7 @@ class OXOTextClient(GameClient):
             if msg == "play again":
                 
                 # reset board for new game
-                for position in range(9):
-                    self.board[position] = ' '
+                self.clear_board()
                     
                 answer = self.input_play_again()
                 
